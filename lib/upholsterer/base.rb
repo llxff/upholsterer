@@ -31,6 +31,7 @@ module Upholsterer
         @subjects = names
         attr_reader *names
         private *names
+        public :subject
       end
 
       @subjects

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    upholsterer (0.4.0)
+    upholsterer (0.4.1)
 
 GEM
   remote: https://rubygems.org/

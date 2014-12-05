@@ -1,7 +1,7 @@
 module Upholsterer
   class Base
     def to_hash
-      Hash[public_methods(false).collect do |field|
+      Hash[json_fields.collect do |field|
         [field, public_send(field)]
       end]
     end
@@ -12,5 +12,12 @@ module Upholsterer
 
     alias :to_h :to_hash
     alias :as_json :to_json
+
+    private
+    def json_fields
+      @json_fields ||= public_methods(false).tap do |fields|
+        fields.delete(:subject)
+      end
+    end
   end
 end

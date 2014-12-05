@@ -74,7 +74,7 @@ describe Upholsterer::Base do
       its(:email) { should == 'john@doe.com' }
 
       it 'responds to private subject method' do
-        expect(subject.private_methods).to include(:subject)
+        expect(subject.public_methods).to include(:subject)
       end
 
       it 'returns subject' do
