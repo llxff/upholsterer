@@ -1,8 +1,6 @@
-require "spec_helper"
-
 describe Upholsterer::Base do
-  describe ".expose" do
-    context "not using :with option" do
+  describe '.expose' do
+    context 'not using :with option' do
       subject { UserPresenter.new }
 
       it { should respond_to(:name) }
@@ -11,26 +9,26 @@ describe Upholsterer::Base do
       it { should_not respond_to(:password_salt) }
     end
 
-    context "using :with option" do
+    context 'using :with option' do
       subject { CommentPresenter.new }
 
       it { should respond_to(:user_name) }
     end
 
-    context "using :as option" do
-      let(:site) { OpenStruct.new(:site => "http://example.org") }
+    context 'using :as option' do
+      let(:site) { OpenStruct.new(site: 'http://example.org') }
       subject { AliasPresenter.new(site) }
 
       it { should respond_to(:url) }
-      it { expect(subject.url).to eql("http://example.org") }
+      it { expect(subject.url).to eql('http://example.org') }
     end
 
-    context "exposing iterators" do
+    context 'exposing iterators' do
       subject { IteratorPresenter.new([1, 2, 3]) }
 
       its(:each) { should be_a(Enumerator) }
 
-      it "uses provided block" do
+      it 'uses provided block' do
         numbers = []
         subject.each {|n| numbers << n}
         expect(numbers).to eql([1, 2, 3])
@@ -38,8 +36,8 @@ describe Upholsterer::Base do
     end
   end
 
-  describe ".attributes" do
-    context "using defaults" do
+  describe '.attributes' do
+    context 'using defaults' do
       let(:presenter) { UserPresenter }
       subject { presenter.attributes }
 
@@ -48,7 +46,7 @@ describe Upholsterer::Base do
       its([:email]) { should eql([:email, {}]) }
     end
 
-    context "using provided options" do
+    context 'using provided options' do
       let(:presenter) { CommentPresenter }
       subject { presenter.attributes }
 
@@ -58,101 +56,101 @@ describe Upholsterer::Base do
     end
   end
 
-  describe ".subjects" do
-    it "is aliased as .subject" do
-      thing = double("Thing")
+  describe '.subjects' do
+    it 'is aliased as .subject' do
+      thing = double('Thing')
       presenter_class = Class.new(Presenter)
       presenter_class.subject :thing
       presenter = presenter_class.new(thing)
 
-      expect(presenter.instance_variable_get("@thing")).to eql(thing)
+      expect(presenter.instance_variable_get('@thing')).to eql(thing)
     end
 
-    context "using defaults" do
-      let(:user) { double :name => "John Doe", :email => "john@doe.com" }
+    context 'using defaults' do
+      let(:user) { double name: 'John Doe', email: 'john@doe.com' }
       subject { UserPresenter.new(user) }
 
-      its(:name) { should == "John Doe" }
-      its(:email) { should == "john@doe.com" }
+      its(:name) { should == 'John Doe' }
+      its(:email) { should == 'john@doe.com' }
 
-      it "responds to private subject method" do
-        expect(subject.public_methods).to include(:subject)
+      it 'responds to private subject method' do
+        expect(subject.private_methods).to include(:subject)
       end
 
-      it "returns subject" do
+      it 'returns subject' do
         expect(subject.send(:subject)).to eql(user)
       end
     end
 
-    context "specifying several subjects" do
-      let(:user) { double :name => "John Doe" }
-      let(:comment) { double :body => "Some comment", :user => user }
-      let(:post) { double :title => "Some post" }
+    context 'specifying several subjects' do
+      let(:user) { double name: 'John Doe' }
+      let(:comment) { double body: 'Some comment', user: user }
+      let(:post) { double title: 'Some post' }
       subject { CommentPresenter.new(comment, post) }
 
-      its(:body) { should == "Some comment" }
-      its(:post_title) { should == "Some post" }
-      its(:user_name) { should == "John Doe" }
+      its(:body) { should == 'Some comment' }
+      its(:post_title) { should == 'Some post' }
+      its(:user_name) { should == 'John Doe' }
 
-      it "responds to private comment method" do
-        expect(subject.public_methods).to include(:comment)
+      it 'responds to private comment method' do
+        expect(subject.private_methods).to include(:comment)
       end
 
-      it "responds to private post method" do
-        expect(subject.public_methods).to include(:post)
+      it 'responds to private post method' do
+        expect(subject.private_methods).to include(:post)
       end
 
-      it "returns comment subject" do
+      it 'returns comment subject' do
         expect(subject.send(:comment)).to eql(comment)
       end
 
-      it "returns post subject" do
+      it 'returns post subject' do
         expect(subject.send(:post)).to eql(post)
       end
     end
 
-    context "when subjects are nil" do
-      let(:comment) { double :body => "Some comment" }
+    context 'when subjects are nil' do
+      let(:comment) { double body: 'Some comment' }
       subject { CommentPresenter.new(comment, nil) }
 
       its(:post_title) { should be_nil }
     end
   end
 
-  describe ".map" do
-    context "wraps a single subject" do
-      let(:user) { double :name => "John Doe" }
+  describe '.map' do
+    context 'wraps a single subject' do
+      let(:user) { double name: 'John Doe' }
       subject { UserPresenter.map([user])[0] }
 
       it { should be_a(UserPresenter) }
-      its(:name) { should == "John Doe" }
+      its(:name) { should == 'John Doe' }
     end
 
-    context "wraps several subjects" do
-      let(:comment) { double :body => "Some comment" }
-      let(:post) { double :title => "Some post" }
-      let(:user) { double :name => "John Doe" }
+    context 'wraps several subjects' do
+      let(:comment) { double body: 'Some comment' }
+      let(:post) { double title: 'Some post' }
+      let(:user) { double name: 'John Doe' }
       subject { CommentPresenter.map([comment], post)[0] }
 
       it { should be_a(CommentPresenter) }
-      its(:body) { should == "Some comment" }
-      its(:post_title) { should == "Some post" }
+      its(:body) { should == 'Some comment' }
+      its(:post_title) { should == 'Some post' }
     end
   end
 
-  describe "#initialize" do
+  describe '#initialize' do
     let(:user) { double }
     subject { UserPresenter.new(user) }
 
-    it "assigns the subject" do
-      expect(subject.instance_variable_get("@subject")).to eql(user)
+    it 'assigns the subject' do
+      expect(subject.instance_variable_get('@subject')).to eql(user)
     end
   end
 
-  describe "inherited presenter" do
+  describe 'inherited presenter' do
     let(:presenter) { Class.new(CommentPresenter) }
 
-    context "subjects" do
+    context 'subjects' do
       subject { presenter.subjects }
 
       specify { expect(subject).to have(2).items }
@@ -160,12 +158,24 @@ describe Upholsterer::Base do
       specify { expect(subject.last).to eql(:post) }
     end
 
-    context "attributes" do
+    context 'attributes' do
       subject { presenter.attributes }
 
       it { should have(3).items }
       its([:user_name]) { should eql([:name, {with: :user}]) }
       its([:post_title]) { should eql([:title, {with: :post}]) }
     end
+  end
+
+  describe 'as json' do
+    let(:user) { double name: 'John Doe' }
+    let(:comment) { double body: 'Some comment', user: user }
+    let(:post) { double title: 'Some post' }
+    subject { CommentPresenter.new(comment, post).to_hash }
+
+    its(:keys) { should match_array [:body, :user_name, :post_title] }
+    its([:body]) { should eq 'Some comment' }
+    its([:user_name]) { should eq 'John Doe'}
+    its([:post_title]) { should eq 'Some post'}
   end
 end
