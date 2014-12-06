@@ -178,4 +178,30 @@ describe Upholsterer::Base do
     its([:user_name]) { should eq 'John Doe'}
     its([:post_title]) { should eq 'Some post'}
   end
+
+  describe 'expose with block' do
+    let(:project) { double id: 1, description: 'description', type: 'type' }
+    subject { CollectPresenter.new(entity) }
+
+    context 'Test presenter' do
+      let(:entity) { double name: 'Test', project: project, email: 'foo@bar.com' }
+
+      its(:id) { should eq 1 }
+      its(:name) { should eq 'Test' }
+      its(:email) { should eq 'foo@bar.com' }
+      its(:type) { should eq 'test_type' }
+      its(:description) { should eq 'test_description' }
+      its(:to_json) { should eq '{"name":"Test","email":"foo@bar.com","id":1,"description":"test_description","type":"test_type"}'}
+    end
+
+    context 'Real presenter' do
+      let(:entity) { double name: 'Real', project: project, email: 'foo@bar.com' }
+
+      its(:name) { should eq 'Real' }
+      its(:email) { should eq 'foo@bar.com' }
+      its(:type) { should eq 'real_type' }
+      its(:description) { should eq 'real_description' }
+      its(:to_json) { should eq '{"name":"Real","email":"foo@bar.com","id":1,"description":"real_description","type":"real_type"}'}
+    end
+  end
 end

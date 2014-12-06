@@ -97,25 +97,53 @@ module Upholsterer
     # The presenter above will expose the methods +body+, +created_at+, and +user_name+.
     # Additionaly, it will create an alias called +author+ to the +name+ attribute.
     #
-    def self.expose(*attrs)
+    def self.expose(*attrs, &block)
       options = attrs.pop if attrs.last.kind_of?(Hash)
       options ||= {}
 
-      attrs.each do |attr_name|
-        subject = options.fetch(:with, nil)
+      container = options.fetch(:with, nil)
+      method_prefix = container if options.fetch(:prefix, true)
 
+      if block_given? and container.present?
+        wrapper_method = "#{ attrs.join('_') }_wrapper"
+        wrapper_instance_variable = "@#{ wrapper_method }"
+
+        define_method wrapper_method do
+          unless instance_variable_defined?(wrapper_instance_variable)
+            if respond_to?(container)
+              object_container = public_send(container)
+            else
+              object_container = subject.public_send(container)
+            end
+
+            wrapper = instance_eval(&block).new(object_container)
+
+            instance_variable_set(wrapper_instance_variable, wrapper)
+          end
+
+          instance_variable_get(wrapper_instance_variable)
+        end
+
+        private wrapper_method
+      end
+
+      attrs.each do |attr_name|
         method_name = [
-          subject,
+          method_prefix,
           options.fetch(:as, attr_name)
-        ].compact.join("_")
+        ].compact.join('_')
 
         attributes[method_name.to_sym] = [attr_name, options]
 
-        class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{method_name}(&block)                                    # def user_name(&block)
-            proxy_message(#{subject.inspect}, "#{attr_name}", &block)   #   proxy_message("user", "name")
-          end                                                           # end
-        RUBY
+        if block_given? and container.present?
+          delegate attr_name, to: wrapper_method, prefix: !!method_prefix
+        else
+          class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{method_name}(&block)                                    # def user_name(&block)
+              proxy_message(#{container.inspect}, "#{attr_name}", &block)   #   proxy_message("user", "name")
+            end                                                           # end
+          RUBY
+        end
       end
     end
     
