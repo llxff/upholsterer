@@ -7,7 +7,7 @@ module Upholsterer
     end
 
     def to_json(*args)
-      to_hash.to_json(*args)
+      to_hash
     end
 
     alias :to_h :to_hash

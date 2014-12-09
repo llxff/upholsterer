@@ -191,7 +191,7 @@ describe Upholsterer::Base do
       its(:email) { should eq 'foo@bar.com' }
       its(:type) { should eq 'test_type' }
       its(:description) { should eq 'test_description' }
-      its(:to_json) { should eq '{"name":"Test","email":"foo@bar.com","id":1,"description":"test_description","type":"test_type"}'}
+      its(:to_json) { should eq(name: 'Test', email: 'foo@bar.com', id: 1, description: 'test_description', type: 'test_type') }
     end
 
     context 'Real presenter' do
@@ -201,7 +201,7 @@ describe Upholsterer::Base do
       its(:email) { should eq 'foo@bar.com' }
       its(:type) { should eq 'real_type' }
       its(:description) { should eq 'real_description' }
-      its(:to_json) { should eq '{"name":"Real","email":"foo@bar.com","id":1,"description":"real_description","type":"real_type"}'}
+      its(:to_json) { should eq(name: 'Real', email: 'foo@bar.com', id: 1, description: 'real_description', type: 'real_type') }
     end
   end
 end
