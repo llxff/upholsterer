@@ -179,6 +179,13 @@ describe Upholsterer::Base do
     its([:post_title]) { should eq 'Some post'}
   end
 
+  describe 'as json with expose all' do
+    let(:comment) { double body: 'Some comment', user: 'user' }
+    subject { ExposeAllPresenter.new(comment).to_json }
+
+    it { should eq '' }
+  end
+
   describe 'expose with block' do
     let(:project) { double id: 1, description: 'description', type: 'type' }
     subject { CollectPresenter.new(entity) }

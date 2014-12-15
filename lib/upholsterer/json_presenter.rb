@@ -13,10 +13,13 @@ module Upholsterer
     alias :to_h :to_hash
     alias :as_json :to_json
 
-    private
+  private
+
     def json_fields
       @json_fields ||= public_methods(false).tap do |fields|
         fields.delete(:subject)
+        fields.delete(:respond_to?)
+        fields.delete(:method_missing)
       end
     end
   end
