@@ -1,8 +1,8 @@
 module Upholsterer
   module Version
     MAJOR = 0
-    MINOR = 4
-    PATCH = 5
+    MINOR = 5
+    PATCH = 0
     STRING = "#{MAJOR}.#{MINOR}.#{PATCH}"
   end
 end
