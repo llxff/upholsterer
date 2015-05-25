@@ -128,21 +128,25 @@ module Upholsterer
       end
 
       attrs.each do |attr_name|
-        method_name = [
-          method_prefix,
-          options.fetch(:as, attr_name)
-        ].compact.join('_')
-
-        attributes[method_name.to_sym] = [attr_name, options]
-
-        if block_given? and container.present?
-          delegate attr_name, to: wrapper_method, prefix: !!method_prefix
+        if options.fetch(:serializable, false)
+          attributes[attr_name] = [attr_name, options]
         else
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{method_name}(&block)                                    # def user_name(&block)
-              proxy_message(#{container.inspect}, "#{attr_name}", &block)   #   proxy_message("user", "name")
-            end                                                           # end
-          RUBY
+          method_name = [
+            method_prefix,
+            options.fetch(:as, attr_name)
+          ].compact.join('_')
+
+          attributes[method_name.to_sym] = [attr_name, options]
+
+          if block_given? and container.present?
+            delegate attr_name, to: wrapper_method, prefix: !!method_prefix
+          else
+            class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def #{method_name}(&block)                                    # def user_name(&block)
+                proxy_message(#{container.inspect}, "#{attr_name}", &block)   #   proxy_message("user", "name")
+              end                                                           # end
+            RUBY
+          end
         end
       end
     end

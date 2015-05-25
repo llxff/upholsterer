@@ -4,6 +4,12 @@ module Upholsterer
   class Base
     delegate :to_json, :as_json, to: :to_hash, prefix: false
 
+    def self.serializable(*args)
+      args.each do |method_name|
+        attributes[method_name.to_sym] = [method_name.to_sym, { serializable: true }]
+      end
+    end
+
     def to_hash
       Hash[json_fields.collect do |field|
         [field, public_send(field)]
@@ -15,10 +21,13 @@ module Upholsterer
   private
 
     def json_fields
-      @json_fields ||= public_methods(false).tap do |fields|
-        fields.delete(:subject)
-        fields.delete(:respond_to?)
-        fields.delete(:method_missing)
+      @json_fields ||= begin
+        methods = public_methods(false).tap do |fields|
+          fields.delete(:subject)
+          fields.delete(:respond_to?)
+          fields.delete(:method_missing)
+        end
+        (methods + self.class.attributes.keys).uniq
       end
     end
   end

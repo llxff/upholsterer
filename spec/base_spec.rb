@@ -186,6 +186,14 @@ describe Upholsterer::Base do
     it { should eq '{}' }
   end
 
+  describe 'serializable' do
+    describe 'with inheritance' do
+      subject { SerializablePresenter.new(double).to_json }
+
+      it { should eq '{"one":1,"two":2}'}
+    end
+  end
+
   describe 'expose with block' do
     let(:project) { double id: 1, description: 'description', type: 'type' }
     subject { CollectPresenter.new(entity) }
