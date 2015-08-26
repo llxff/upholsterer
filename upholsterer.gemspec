@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Nando Vieira', 'Aleksandr Fomin', 'Gleb Sinyavsky']
   s.email       = ['fnando.vieira@gmail.com', 'll.wg.bin@gmail.com']
-  s.homepage    = 'https://github.com/Archistart/upholsterer'
+  s.homepage    = 'https://github.com/llxff/upholsterer'
   s.summary     = 'A simple presenter/facade/decorator/whatever implementation.'
   s.description = s.summary
 
