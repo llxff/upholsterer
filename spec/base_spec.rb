@@ -130,7 +130,7 @@ describe Upholsterer::Base do
       let(:comment) { double body: 'Some comment' }
       let(:post) { double title: 'Some post' }
       let(:user) { double name: 'John Doe' }
-      subject { CommentPresenter.map([comment], post)[0] }
+      subject { CommentPresenter.map([[comment, post]])[0] }
 
       it { should be_a(CommentPresenter) }
       its(:body) { should == 'Some comment' }

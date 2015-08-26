@@ -72,12 +72,12 @@ module Upholsterer
     #   users = UserPresenter.map(User.all)
     #
     # If your presenter accepts more than one subject, you can provided
-    # them as following parameters.
+    # them as array of parameters.
     #
-    #   comments = CommentPresenter.map(post.comment.all, post)
+    #   comments = CommentPresenter.map([[comment, post]])
     #
-    def self.map(collection, *subjects)
-      collection.map {|item| new(item, *subjects)}
+    def self.map(collection)
+      collection.map {|items| new(*items) }
     end
 
     # The list of attributes that will be exposed.
