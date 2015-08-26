@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    upholsterer (0.5.0)
+    upholsterer (1.0.0)
       activesupport
 
 GEM
@@ -57,3 +57,6 @@ DEPENDENCIES
   rake
   rspec
   upholsterer!
+
+BUNDLED WITH
+   1.10.6
