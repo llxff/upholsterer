@@ -2,9 +2,9 @@
 
 Based on SimplePresenter (https://github.com/fnando/simple_presenter)
 
-{<img src="https://codeclimate.com/github/Archistart/upholsterer/badges/gpa.svg" />}[https://codeclimate.com/github/Archistart/upholsterer]
-{<img src="https://hakiri.io/github/Archistart/upholsterer/master.svg" alt="security" />}[https://hakiri.io/github/Archistart/upholsterer/master]
-{<img src="https://travis-ci.org/Archistart/upholsterer.svg" />}[https://travis-ci.org/Archistart/upholsterer]
+{<img src="https://codeclimate.com/github/llxff/upholsterer/badges/gpa.svg" />}[https://codeclimate.com/github/llxff/upholsterer]
+{<img src="https://hakiri.io/github/llxff/upholsterer/master.svg" alt="security" />}[https://hakiri.io/github/llxff/upholsterer/master]
+{<img src="https://travis-ci.org/llxff/upholsterer.svg" />}[https://travis-ci.org/llxff/upholsterer]
 
 == Installation
 
