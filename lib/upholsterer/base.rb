@@ -103,6 +103,7 @@ module Upholsterer
 
       container = options.fetch(:with, nil)
       method_prefix = container if options.fetch(:prefix, true)
+      presenter = options.fetch(:presenter, nil)
 
       if block_given? and container.present?
         wrapper_method = "#{ attrs.join('_') }_wrapper"
@@ -121,7 +122,10 @@ module Upholsterer
             instance_variable_set(wrapper_instance_variable, wrapper)
           end
 
-          instance_variable_get(wrapper_instance_variable)
+
+
+          value = instance_variable_get(wrapper_instance_variable)
+          decorate_with_presenter(value, presenter)
         end
 
         private wrapper_method
@@ -142,9 +146,10 @@ module Upholsterer
             delegate attr_name, to: wrapper_method, prefix: !!method_prefix
           else
             class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def #{method_name}(&block)                                    # def user_name(&block)
-                proxy_message(#{container.inspect}, "#{attr_name}", &block)   #   proxy_message("user", "name")
-              end                                                           # end
+              def #{method_name}(&block)
+                value = proxy_message(#{container.inspect}, "#{attr_name}", &block)
+                decorate_with_presenter(value, #{ presenter.inspect })
+              end
             RUBY
           end
         end
@@ -196,6 +201,14 @@ module Upholsterer
       subject = instance_variable_get("@#{subject_name}")
       subject = instance_variable_get("@#{self.class.subjects.first}").__send__(subject_name) unless subject || self.class.subjects.include?(subject_name)
       subject.respond_to?(method) ? subject.__send__(method, &block) : nil
+    end
+
+    def decorate_with_presenter(value, presenter)
+      if value.present? and presenter
+        presenter.new(value)
+      else
+        value
+      end
     end
   end
 end

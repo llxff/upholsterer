@@ -219,4 +219,34 @@ describe Upholsterer::Base do
       its(:to_json) { should be_json_with(name: 'Real', email: 'foo@bar.com', id: 1, description: 'real_description', type: 'real_type') }
     end
   end
+
+  describe 'expose with other presenter' do
+    context 'with several subjects' do
+      let(:user) { double name: 'Peter', email: 'peter@email.com' }
+      let(:comment) { double(user: double(name: 'Steve', email: 'steve@email.com')) }
+
+      subject { ExposeWithOtherPresenter.new(user, comment) }
+
+      its(:user_name) { should eq 'Peter' }
+
+      specify { expect(subject.creator.name).to eq 'Steve' }
+      specify { expect(subject.creator.email).to eq 'steve@email.com' }
+      its(:to_json) { should be_json_with(user_name: 'Peter', creator: { name: 'Steve', email: 'steve@email.com'}) }
+    end
+
+    context 'with one subject' do
+      let(:user) { double name: 'Peter', email: 'peter@email.com' }
+      let(:post) { double user: user, comment: nil, id: 1}
+
+      subject { ExposeWithOneSubjectPresenter.new(post) }
+
+      its(:id) { should eq 1 }
+      its(:comment) { should be_nil }
+
+      specify { expect(subject.user.name).to eq 'Peter' }
+      specify { expect(subject.user.email).to eq 'peter@email.com' }
+
+      its(:to_json) { should be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
+    end
+  end
 end
