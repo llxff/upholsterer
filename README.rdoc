@@ -62,12 +62,6 @@ If you're using Rails/Bundler or something like that, remember to override the <
 
   gem "upholsterer", :require => "upholsterer/namespace"
 
-== Maintainer
-
-* Nando Vieira (http://nandovieira.com.br)
-* Aleksandr Fomin (https://github.com/llxff)
-* Gleb Sinyavsky (http://github.com/zhulik)
-
 == License
 
 (The MIT License)
