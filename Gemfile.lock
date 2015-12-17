@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    upholsterer (1.1.0)
+    upholsterer (1.2.0)
       activesupport
 
 GEM
@@ -59,4 +59,4 @@ DEPENDENCIES
   upholsterer!
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
