@@ -48,6 +48,7 @@ module Upholsterer
       attributes.each_value do |attr_name, options|
         child.expose(attr_name, options)
       end
+      child.do_not_use_prefixes! if do_not_use_prefixes?
     end
 
     # Store all attributes and options that have been exposed.
@@ -65,6 +66,14 @@ module Upholsterer
     #
     def self.attributes
       @attributes ||= {}
+    end
+
+    def self.do_not_use_prefixes!
+      @do_not_use_prefixes = true
+    end
+
+    def self.do_not_use_prefixes?
+      @do_not_use_prefixes
     end
 
     # This method will return a presenter for each item of collection.
@@ -102,7 +111,7 @@ module Upholsterer
       options ||= {}
 
       container = options.fetch(:with, nil)
-      method_prefix = container if options.fetch(:prefix, true)
+      method_prefix = container if options.fetch(:prefix, !do_not_use_prefixes?)
       presenter = options.fetch(:presenter, nil)
 
       if block_given? and container.present?
@@ -205,7 +214,11 @@ module Upholsterer
 
     def decorate_with_presenter(value, presenter)
       if value.present? and presenter
-        presenter.new(value)
+        if value.is_a? Array
+          presenter.map(value)
+        else
+          presenter.new(value)
+        end
       else
         value
       end

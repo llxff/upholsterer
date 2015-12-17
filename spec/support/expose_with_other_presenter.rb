@@ -3,10 +3,12 @@ class SimplePresenter < Presenter
 end
 
 class ExposeWithOtherPresenter < Presenter
+  do_not_use_prefixes!
+
   subjects :user, :comment
 
   expose :name, with: :user
-  expose :user, presenter: SimplePresenter, with: :comment, as: :creator, prefix: false
+  expose :user, presenter: SimplePresenter, with: :comment, as: :creator
 end
 
 class ExposeWithOneSubjectPresenter < Presenter

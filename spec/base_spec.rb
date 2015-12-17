@@ -165,6 +165,20 @@ describe Upholsterer::Base do
       its([:user_name]) { should eql([:name, {with: :user}]) }
       its([:post_title]) { should eql([:title, {with: :post}]) }
     end
+
+    context 'do_not_use_prefixes' do
+      subject { presenter }
+
+      context 'without setting' do
+        its(:do_not_use_prefixes?) { should be_false }
+      end
+
+      context 'with setting' do
+        before { CommentPresenter.do_not_use_prefixes! }
+
+        its(:do_not_use_prefixes?) { should be_true }
+      end
+    end
   end
 
   describe 'as json' do
@@ -227,11 +241,11 @@ describe Upholsterer::Base do
 
       subject { ExposeWithOtherPresenter.new(user, comment) }
 
-      its(:user_name) { should eq 'Peter' }
+      its(:name) { should eq 'Peter' }
 
       specify { expect(subject.creator.name).to eq 'Steve' }
       specify { expect(subject.creator.email).to eq 'steve@email.com' }
-      its(:to_json) { should be_json_with(user_name: 'Peter', creator: { name: 'Steve', email: 'steve@email.com'}) }
+      its(:to_json) { should be_json_with(name: 'Peter', creator: { name: 'Steve', email: 'steve@email.com'}) }
     end
 
     context 'with one subject' do
