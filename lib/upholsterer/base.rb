@@ -131,8 +131,6 @@ module Upholsterer
             instance_variable_set(wrapper_instance_variable, wrapper)
           end
 
-
-
           value = instance_variable_get(wrapper_instance_variable)
           decorate_with_presenter(value, presenter)
         end
