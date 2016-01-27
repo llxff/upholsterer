@@ -41,11 +41,6 @@ If you want to to use <tt>*_url</tt> route methods, make sure you set the <tt>de
 
 For additional usage, check the specs.
 
-== TO-DO
-
-* Recognize ActiveRecord objects and automatically expose attributes used by url and form helpers (like <tt>Model.model_name</tt>, <tt>Model#to_key</tt>, and <tt>Model#to_param</tt>).
-* Override <tt>respond_to?</tt> to reflect exposed attributes.
-
 == Troubleshooting
 
 If you're having problems because already have a class/module called Presenter that is conflicting with this gem, you can require the namespace and inherit from <tt>Upholsterer::Base</tt>.
