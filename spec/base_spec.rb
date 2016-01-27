@@ -263,4 +263,26 @@ describe Upholsterer::Base do
       its(:to_json) { should be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
     end
   end
+
+  describe 'custom subject' do
+    let(:presenter) do
+      Class.new(Presenter) do
+        subjects :message, :user
+
+        expose :id
+        expose :name, with: :user
+
+        private
+
+        def user
+          message.recipient.user
+        end
+      end
+    end
+
+    subject { presenter.new(double(id: 1, recipient: double(user: double(name: 'Tom')))) }
+
+    its(:id) { should eq 1 }
+    its(:user_name) { should eq 'Tom' }
+  end
 end

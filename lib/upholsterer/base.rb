@@ -203,10 +203,16 @@ module Upholsterer
     end
 
     private
+
     def proxy_message(subject_name, method, &block)
-      subject_name ||= self.class.subjects.first
-      subject = instance_variable_get("@#{subject_name}")
-      subject = instance_variable_get("@#{self.class.subjects.first}").__send__(subject_name) unless subject || self.class.subjects.include?(subject_name)
+      if subject_name.blank? # expose :id
+        subject = send(self.class.subjects.first)
+      elsif self.class.subjects.include?(subject_name) # expose :id, with: :user, when :user is one of subjects or custom getter
+        subject = send(subject_name)
+      else
+        subject = send(self.class.subjects.first).send(subject_name)# expose :id, with: :user
+      end
+
       subject.respond_to?(method) ? subject.__send__(method, &block) : nil
     end
 
