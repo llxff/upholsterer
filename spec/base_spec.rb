@@ -262,6 +262,37 @@ describe Upholsterer::Base do
 
       its(:to_json) { should be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
     end
+
+    context 'when presenter is anonym class' do
+      let(:anonym_presenter) do
+        Class.new(Presenter).tap do |presenter|
+          presenter.expose :name
+          presenter.expose :email
+        end
+      end
+
+      let(:presenter) do
+        Class.new(Presenter).tap do |presenter|
+          presenter.expose :id
+          presenter.expose :user, presenter: anonym_presenter
+          presenter.expose :comment, presenter: anonym_presenter
+        end
+      end
+
+      let(:user) { double name: 'Peter', email: 'peter@email.com' }
+      let(:post) { double user: user, comment: nil, id: 1}
+
+      subject { presenter.new(post) }
+
+      its(:id) { should eq 1 }
+      its(:comment) { should be_nil }
+
+      specify { expect(subject.user.name).to eq 'Peter' }
+      specify { expect(subject.user.email).to eq 'peter@email.com' }
+
+      its(:to_json) { should be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
+      its(:as_json) { should eq('id' => 1, 'user' => { 'name' => 'Peter', 'email' => 'peter@email.com'}, 'comment' => nil) }
+    end
   end
 
   describe 'custom subject' do

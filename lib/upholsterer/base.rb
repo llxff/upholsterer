@@ -152,12 +152,10 @@ module Upholsterer
           if block_given? and container.present?
             delegate attr_name, to: wrapper_method, prefix: !!method_prefix
           else
-            class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def #{method_name}(&block)
-                value = proxy_message(#{container.inspect}, "#{attr_name}", &block)
-                decorate_with_presenter(value, #{ presenter.inspect })
-              end
-            RUBY
+            define_method method_name do |&block|
+              value = proxy_message(container, attr_name, &block)
+              decorate_with_presenter(value, presenter)
+            end
           end
         end
       end
