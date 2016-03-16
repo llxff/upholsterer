@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    upholsterer (1.3.0)
+    upholsterer (1.4.0)
       activesupport
 
 GEM
