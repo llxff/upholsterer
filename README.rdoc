@@ -20,12 +20,6 @@ Based on SimplePresenter (https://github.com/fnando/simple_presenter)
     expose :name, :email
   end
 
-  or
-
-  class UserPresenter < Upholsterer::Base
-    expose_all
-  end
-
   user = UserPresenter.new(User.first)
   users = UserPresenter.map(User.all)
 

@@ -193,13 +193,6 @@ describe Upholsterer::Base do
     its([:post_title]) { is_expected.to eq 'Some post'}
   end
 
-  describe 'as json with expose all' do
-    let(:comment) { double body: 'Some comment', user: 'user' }
-    subject { ExposeAllPresenter.new(comment).to_json }
-
-    it { is_expected.to eq '{}' }
-  end
-
   describe 'serializable' do
     describe 'with inheritance' do
       subject { SerializablePresenter.new(double).to_json }

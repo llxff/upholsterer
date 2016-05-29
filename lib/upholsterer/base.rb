@@ -12,18 +12,14 @@ module Upholsterer
     #     expose :title, :with => :post # will expose post.title through CommentPresenter#post_title
     #   end
     #
-    #   class CommentPresenter < Presenter
-    #     expose_all
-    #   end
-    #
     # Subjects can be accessed by a private name with the same name.
     # So the above subjects can be accessed internally by the methods +comment+ and +post+.
     #
     # If you're not setting any special name, then you can access it using the +subject+ method.
     #
-    
+
     attr_reader :subject
-    
+
     def self.subjects(*names)
       @subjects ||= [:subject]
 
@@ -160,18 +156,6 @@ module Upholsterer
         end
       end
     end
-    
-    def self.expose_all
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def method_missing(name, *params)
-          @subject.send(name, *params)
-        end
-
-        def respond_to?(name)
-          super || @subject.respond_to?(name)
-        end
-      RUBY
-    end
 
     # It assigns the subjects.
     #
@@ -195,7 +179,7 @@ module Upholsterer
         instance_variable_set("@#{name}", subjects[index])
       end
     end
-    
+
     def to_param(*params)
       @subject.to_param(*params)
     end
