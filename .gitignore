@@ -3,3 +3,5 @@ pkg
 tmp
 .tags
 .idea
+.ruby-gemset
+.ruby-version
