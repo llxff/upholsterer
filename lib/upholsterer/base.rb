@@ -111,27 +111,7 @@ module Upholsterer
       presenter = options.fetch(:presenter, nil)
 
       if block_given? and container.present?
-        wrapper_method = "#{ attrs.join('_') }_wrapper"
-        wrapper_instance_variable = "@#{ wrapper_method }"
-
-        define_method wrapper_method do
-          unless instance_variable_defined?(wrapper_instance_variable)
-            if respond_to?(container)
-              object_container = public_send(container)
-            else
-              object_container = subject.public_send(container)
-            end
-
-            wrapper = instance_eval(&block).new(object_container)
-
-            instance_variable_set(wrapper_instance_variable, wrapper)
-          end
-
-          value = instance_variable_get(wrapper_instance_variable)
-          decorate_with_presenter(value, presenter)
-        end
-
-        private wrapper_method
+        wrapper_method = define_block_handler(attrs, container, presenter, &block)
       end
 
       attrs.each do |attr_name|
@@ -185,6 +165,32 @@ module Upholsterer
     end
 
     private
+
+    def self.define_block_handler(attrs, container, presenter, &block)
+      wrapper_method = "#{ attrs.join('_') }_wrapper"
+      wrapper_instance_variable = "@#{ wrapper_method }"
+
+      define_method wrapper_method do
+        unless instance_variable_defined?(wrapper_instance_variable)
+          if respond_to?(container)
+            object_container = public_send(container)
+          else
+            object_container = subject.public_send(container)
+          end
+
+          wrapper = instance_eval(&block).new(object_container)
+
+          instance_variable_set(wrapper_instance_variable, wrapper)
+        end
+
+        value = instance_variable_get(wrapper_instance_variable)
+        decorate_with_presenter(value, presenter)
+      end
+
+      private wrapper_method
+
+      return wrapper_method
+    end
 
     def proxy_message(subject_name, method, &block)
       if subject_name.blank? # expose :id
