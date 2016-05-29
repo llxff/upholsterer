@@ -115,25 +115,7 @@ module Upholsterer
       end
 
       attrs.each do |attr_name|
-        if options.fetch(:serializable, false)
-          attributes[attr_name] = [attr_name, options]
-        else
-          method_name = [
-            method_prefix,
-            options.fetch(:as, attr_name)
-          ].compact.join('_')
-
-          attributes[method_name.to_sym] = [attr_name, options]
-
-          if block_given? and container.present?
-            delegate attr_name, to: wrapper_method, prefix: !!method_prefix
-          else
-            define_method method_name do |&block|
-              value = proxy_message(container, attr_name, &block)
-              decorate_with_presenter(value, presenter)
-            end
-          end
-        end
+        define_expose_method(attr_name, options, method_prefix, container, wrapper_method, presenter, &block)
       end
     end
 
@@ -190,6 +172,28 @@ module Upholsterer
       private wrapper_method
 
       return wrapper_method
+    end
+
+    def self.define_expose_method(attr_name, options, method_prefix, container, wrapper_method, presenter, &block)
+      if options.fetch(:serializable, false)
+        attributes[attr_name] = [attr_name, options]
+      else
+        method_name = [
+          method_prefix,
+          options.fetch(:as, attr_name)
+        ].compact.join('_')
+
+        attributes[method_name.to_sym] = [attr_name, options]
+
+        if block_given? and container.present?
+          delegate attr_name, to: wrapper_method, prefix: !!method_prefix
+        else
+          define_method method_name do |&block|
+            value = proxy_message(container, attr_name, &block)
+            decorate_with_presenter(value, presenter)
+          end
+        end
+      end
     end
 
     def proxy_message(subject_name, method, &block)
