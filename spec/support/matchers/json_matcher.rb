@@ -1,6 +1,9 @@
 RSpec::Matchers.define :be_json_with do |expected|
   match do |json_string|
-    json_string == expected.to_json
+    actual_hash = JSON.parse(json_string).sort_by(&:first).to_h
+    expected_hash = expected.sort_by(&:first).to_h
+
+    actual_hash.to_json == expected_hash.to_json
   end
 end
 

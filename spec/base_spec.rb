@@ -3,30 +3,30 @@ describe Upholsterer::Base do
     context 'not using :with option' do
       subject { UserPresenter.new }
 
-      it { should respond_to(:name) }
-      it { should respond_to(:email) }
-      it { should_not respond_to(:password_hash) }
-      it { should_not respond_to(:password_salt) }
+      it { is_expected.to respond_to(:name) }
+      it { is_expected.to respond_to(:email) }
+      it { is_expected.not_to respond_to(:password_hash) }
+      it { is_expected.not_to respond_to(:password_salt) }
     end
 
     context 'using :with option' do
       subject { CommentPresenter.new }
 
-      it { should respond_to(:user_name) }
+      it { is_expected.to respond_to(:user_name) }
     end
 
     context 'using :as option' do
-      let(:site) { OpenStruct.new(site: 'http://example.org') }
+      let(:site) { double(site: 'http://example.org') }
       subject { AliasPresenter.new(site) }
 
-      it { should respond_to(:url) }
+      it { is_expected.to respond_to(:url) }
       it { expect(subject.url).to eql('http://example.org') }
     end
 
     context 'exposing iterators' do
       subject { IteratorPresenter.new([1, 2, 3]) }
 
-      its(:each) { should be_a(Enumerator) }
+      its(:each) { is_expected.to be_a(Enumerator) }
 
       it 'uses provided block' do
         numbers = []
@@ -41,18 +41,18 @@ describe Upholsterer::Base do
       let(:presenter) { UserPresenter }
       subject { presenter.attributes }
 
-      it { should have(2).items }
-      its([:name]) { should eql([:name, {}]) }
-      its([:email]) { should eql([:email, {}]) }
+      it { is_expected.to have(2).items }
+      its([:name]) { is_expected.to eql([:name, {}]) }
+      its([:email]) { is_expected.to eql([:email, {}]) }
     end
 
     context 'using provided options' do
       let(:presenter) { CommentPresenter }
       subject { presenter.attributes }
 
-      it { should have(3).items }
-      its([:user_name]) { should eql([:name, {with: :user}]) }
-      its([:post_title]) { should eql([:title, {with: :post}]) }
+      it { is_expected.to have(3).items }
+      its([:user_name]) { is_expected.to eql([:name, {with: :user}]) }
+      its([:post_title]) { is_expected.to eql([:title, {with: :post}]) }
     end
   end
 
@@ -70,8 +70,8 @@ describe Upholsterer::Base do
       let(:user) { double name: 'John Doe', email: 'john@doe.com' }
       subject { UserPresenter.new(user) }
 
-      its(:name) { should == 'John Doe' }
-      its(:email) { should == 'john@doe.com' }
+      its(:name) { is_expected.to eq 'John Doe' }
+      its(:email) { is_expected.to eq 'john@doe.com' }
 
       it 'responds to private subject method' do
         expect(subject.public_methods).to include(:subject)
@@ -88,9 +88,9 @@ describe Upholsterer::Base do
       let(:post) { double title: 'Some post' }
       subject { CommentPresenter.new(comment, post) }
 
-      its(:body) { should == 'Some comment' }
-      its(:post_title) { should == 'Some post' }
-      its(:user_name) { should == 'John Doe' }
+      its(:body) { is_expected.to eq 'Some comment' }
+      its(:post_title) { is_expected.to eq 'Some post' }
+      its(:user_name) { is_expected.to eq 'John Doe' }
 
       it 'responds to private comment method' do
         expect(subject.private_methods).to include(:comment)
@@ -113,7 +113,7 @@ describe Upholsterer::Base do
       let(:comment) { double body: 'Some comment' }
       subject { CommentPresenter.new(comment, nil) }
 
-      its(:post_title) { should be_nil }
+      its(:post_title) { is_expected.to be_nil }
     end
   end
 
@@ -122,8 +122,8 @@ describe Upholsterer::Base do
       let(:user) { double name: 'John Doe' }
       subject { UserPresenter.map([user])[0] }
 
-      it { should be_a(UserPresenter) }
-      its(:name) { should == 'John Doe' }
+      it { is_expected.to be_a(UserPresenter) }
+      its(:name) { is_expected.to eq 'John Doe' }
     end
 
     context 'wraps several subjects' do
@@ -132,9 +132,9 @@ describe Upholsterer::Base do
       let(:user) { double name: 'John Doe' }
       subject { CommentPresenter.map([[comment, post]])[0] }
 
-      it { should be_a(CommentPresenter) }
-      its(:body) { should == 'Some comment' }
-      its(:post_title) { should == 'Some post' }
+      it { is_expected.to be_a(CommentPresenter) }
+      its(:body) { is_expected.to eq 'Some comment' }
+      its(:post_title) { is_expected.to eq 'Some post' }
     end
   end
 
@@ -161,22 +161,22 @@ describe Upholsterer::Base do
     context 'attributes' do
       subject { presenter.attributes }
 
-      it { should have(3).items }
-      its([:user_name]) { should eql([:name, {with: :user}]) }
-      its([:post_title]) { should eql([:title, {with: :post}]) }
+      it { is_expected.to have(3).items }
+      its([:user_name]) { is_expected.to eql([:name, {with: :user}]) }
+      its([:post_title]) { is_expected.to eql([:title, {with: :post}]) }
     end
 
     context 'do_not_use_prefixes' do
       subject { presenter }
 
       context 'without setting' do
-        its(:do_not_use_prefixes?) { should be_false }
+        its(:do_not_use_prefixes?) { is_expected.to be_falsey }
       end
 
       context 'with setting' do
         before { CommentPresenter.do_not_use_prefixes! }
 
-        its(:do_not_use_prefixes?) { should be_true }
+        its(:do_not_use_prefixes?) { is_expected.to be_truthy }
       end
     end
   end
@@ -187,24 +187,24 @@ describe Upholsterer::Base do
     let(:post) { double title: 'Some post' }
     subject { CommentPresenter.new(comment, post).to_hash }
 
-    its(:keys) { should match_array [:body, :user_name, :post_title] }
-    its([:body]) { should eq 'Some comment' }
-    its([:user_name]) { should eq 'John Doe'}
-    its([:post_title]) { should eq 'Some post'}
+    its(:keys) { is_expected.to match_array [:body, :user_name, :post_title] }
+    its([:body]) { is_expected.to eq 'Some comment' }
+    its([:user_name]) { is_expected.to eq 'John Doe'}
+    its([:post_title]) { is_expected.to eq 'Some post'}
   end
 
   describe 'as json with expose all' do
     let(:comment) { double body: 'Some comment', user: 'user' }
     subject { ExposeAllPresenter.new(comment).to_json }
 
-    it { should eq '{}' }
+    it { is_expected.to eq '{}' }
   end
 
   describe 'serializable' do
     describe 'with inheritance' do
       subject { SerializablePresenter.new(double).to_json }
 
-      it { should eq '{"one":1,"two":2}'}
+      it { is_expected.to eq '{"one":1,"two":2}'}
     end
   end
 
@@ -215,22 +215,22 @@ describe Upholsterer::Base do
     context 'Test presenter' do
       let(:entity) { double name: 'Test', project: project, email: 'foo@bar.com' }
 
-      its(:id) { should eq 1 }
-      its(:name) { should eq 'Test' }
-      its(:email) { should eq 'foo@bar.com' }
-      its(:type) { should eq 'test_type' }
-      its(:description) { should eq 'test_description' }
-      its(:to_json) { should be_json_with(name: 'Test', email: 'foo@bar.com', id: 1, description: 'test_description', type: 'test_type') }
+      its(:id) { is_expected.to eq 1 }
+      its(:name) { is_expected.to eq 'Test' }
+      its(:email) { is_expected.to eq 'foo@bar.com' }
+      its(:type) { is_expected.to eq 'test_type' }
+      its(:description) { is_expected.to eq 'test_description' }
+      its(:to_json) { is_expected.to be_json_with(name: 'Test', email: 'foo@bar.com', id: 1, description: 'test_description', type: 'test_type') }
     end
 
     context 'Real presenter' do
       let(:entity) { double name: 'Real', project: project, email: 'foo@bar.com' }
 
-      its(:name) { should eq 'Real' }
-      its(:email) { should eq 'foo@bar.com' }
-      its(:type) { should eq 'real_type' }
-      its(:description) { should eq 'real_description' }
-      its(:to_json) { should be_json_with(name: 'Real', email: 'foo@bar.com', id: 1, description: 'real_description', type: 'real_type') }
+      its(:name) { is_expected.to eq 'Real' }
+      its(:email) { is_expected.to eq 'foo@bar.com' }
+      its(:type) { is_expected.to eq 'real_type' }
+      its(:description) { is_expected.to eq 'real_description' }
+      its(:to_json) { is_expected.to be_json_with(name: 'Real', email: 'foo@bar.com', id: 1, description: 'real_description', type: 'real_type') }
     end
   end
 
@@ -241,11 +241,11 @@ describe Upholsterer::Base do
 
       subject { ExposeWithOtherPresenter.new(user, comment) }
 
-      its(:name) { should eq 'Peter' }
+      its(:name) { is_expected.to eq 'Peter' }
 
       specify { expect(subject.creator.name).to eq 'Steve' }
       specify { expect(subject.creator.email).to eq 'steve@email.com' }
-      its(:to_json) { should be_json_with(name: 'Peter', creator: { name: 'Steve', email: 'steve@email.com'}) }
+      its(:to_json) { is_expected.to be_json_with(name: 'Peter', creator: { name: 'Steve', email: 'steve@email.com'}) }
     end
 
     context 'with one subject' do
@@ -254,13 +254,13 @@ describe Upholsterer::Base do
 
       subject { ExposeWithOneSubjectPresenter.new(post) }
 
-      its(:id) { should eq 1 }
-      its(:comment) { should be_nil }
+      its(:id) { is_expected.to eq 1 }
+      its(:comment) { is_expected.to be_nil }
 
       specify { expect(subject.user.name).to eq 'Peter' }
       specify { expect(subject.user.email).to eq 'peter@email.com' }
 
-      its(:to_json) { should be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
+      its(:to_json) { is_expected.to be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
     end
 
     context 'when presenter is anonym class' do
@@ -284,14 +284,14 @@ describe Upholsterer::Base do
 
       subject { presenter.new(post) }
 
-      its(:id) { should eq 1 }
-      its(:comment) { should be_nil }
+      its(:id) { is_expected.to eq 1 }
+      its(:comment) { is_expected.to be_nil }
 
       specify { expect(subject.user.name).to eq 'Peter' }
       specify { expect(subject.user.email).to eq 'peter@email.com' }
 
-      its(:to_json) { should be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
-      its(:as_json) { should eq('id' => 1, 'user' => { 'name' => 'Peter', 'email' => 'peter@email.com'}, 'comment' => nil) }
+      its(:to_json) { is_expected.to be_json_with(id: 1, user: { name: 'Peter', email: 'peter@email.com'}, comment: nil) }
+      its(:as_json) { is_expected.to eq('id' => 1, 'user' => { 'name' => 'Peter', 'email' => 'peter@email.com'}, 'comment' => nil) }
     end
   end
 
@@ -313,7 +313,7 @@ describe Upholsterer::Base do
 
     subject { presenter.new(double(id: 1, recipient: double(user: double(name: 'Tom')))) }
 
-    its(:id) { should eq 1 }
-    its(:user_name) { should eq 'Tom' }
+    its(:id) { is_expected.to eq 1 }
+    its(:user_name) { is_expected.to eq 'Tom' }
   end
 end
