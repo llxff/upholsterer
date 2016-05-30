@@ -1,10 +1,6 @@
 module Upholsterer
-  class Railtie < Rails::Railtie
-    config.upholsterer = ActiveSupport::OrderedOptions.new
-  end
-
   class Base
-    delegate :translate, :t, :localize, :l, :to => :helpers
+    delegate :translate, :t, :localize, :l, to: :helpers
 
     def self.routes_module
       @routes_module ||= Module.new do
@@ -25,6 +21,7 @@ module Upholsterer
     def helpers
       ApplicationController.helpers
     end
+
     alias_method :h, :helpers
   end
 end
