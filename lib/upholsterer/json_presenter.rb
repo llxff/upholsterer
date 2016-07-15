@@ -10,25 +10,27 @@ module Upholsterer
       end
     end
 
-    def to_hash
-      Hash[json_fields.collect do |field|
-        [field, public_send(field)]
-      end]
-    end
-
-    alias :to_h :to_hash
-
-  private
-
-    def json_fields
-      @json_fields ||= begin
-        methods = public_methods(false).tap do |fields|
+    def self.serialize_attributes
+      @_json_fields ||= begin
+        methods = instance_methods(false).tap do |fields|
           fields.delete(:subject)
           fields.delete(:respond_to?)
           fields.delete(:method_missing)
         end
-        (methods + self.class.attributes.keys).uniq
+        (methods + attributes.keys).uniq
       end
     end
+
+    def to_hash
+      json = {}
+
+      self.class.serialize_attributes.each do |field|
+        json[field] = public_send(field)
+      end
+
+      json
+    end
+
+    alias :to_h :to_hash
   end
 end
