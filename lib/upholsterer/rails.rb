@@ -23,7 +23,7 @@ module Upholsterer
     alias_method :r, :routes
 
     def helpers
-      ApplicationController.helpers
+      @_helpers ||= ApplicationController.helpers
     end
     alias_method :h, :helpers
   end
