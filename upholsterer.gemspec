@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = 'upholsterer'
   s.version     = Upholsterer::Version::STRING
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Nando Vieira', 'Aleksandr Fomin', 'Gleb Sinyavsky']
-  s.email       = ['fnando.vieira@gmail.com', 'll.wg.bin@gmail.com']
+  s.authors     = ['Aleksandr Fomin']
+  s.email       = ['ll.wg.bin@gmail.com']
   s.homepage    = 'https://github.com/llxff/upholsterer'
-  s.summary     = 'A simple presenter/facade/decorator/whatever implementation.'
+  s.summary     = 'A simple serializer implementation.'
   s.description = s.summary
 
   s.files         = `git ls-files`.split("\n")
